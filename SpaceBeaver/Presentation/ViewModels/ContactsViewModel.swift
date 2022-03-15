@@ -59,6 +59,10 @@ class ContactsViewModel: ObservableObject {
         suggested = []
     }
 
+    func toggleBlockContact(contact: Contact) {
+        DataManager.shared.storage?.toggleBlocked(for: contact.contactId, contact: contact.phoneNumber ?? "")
+    }
+
     private func makeViewModel(_ source: CNContact) -> [Contact] {
         return source
             .phoneNumbers

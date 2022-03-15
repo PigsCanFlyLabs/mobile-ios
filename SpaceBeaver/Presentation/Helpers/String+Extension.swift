@@ -15,6 +15,10 @@ extension Optional where Wrapped == String {
 }
 
 extension String {
+    func tripWhiteSpaces() -> String {
+        return self.trimmingCharacters(in: .whitespaces)
+    }
+
     func removeSpaces() -> String {
         return self.replacingOccurrences(of: " ", with: "")
     }

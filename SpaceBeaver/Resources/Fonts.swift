@@ -29,5 +29,6 @@ extension Fonts {
     var size22: Font { Font.custom(self.rawValue, size: 22) }
     var size23: Font { Font.custom(self.rawValue, size: 23) }
     var size24: Font { Font.custom(self.rawValue, size: 24) }
-    var size32: Font { Font.custom(self.rawValue, size: 24) }
+    var size32: Font { Font.custom(self.rawValue, size: 32) }
+    var size50: Font { Font.custom(self.rawValue, size: 50) }
 }

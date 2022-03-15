@@ -1,14 +1,13 @@
 //
-//  SetupSatelliteView.swift
+//  FailedToConnectView.swift
 //  SpaceBeaver
 //
-//  Created by Dmytro Kholodov on 01.03.2022.
+//  Created by Dmytro Kholodov on 03.03.2022.
 //
 
 import SwiftUI
 
-struct SetupSatelliteView: View {
-
+struct FailedToConnectView: View {
     @ObservedObject private var viewModelSetup = SetupViewModel.shared
 
     var body: some View {
@@ -19,8 +18,8 @@ struct SetupSatelliteView: View {
 
             Spacer()
 
-            Images.satelliteOrbits
-                .padding(.bottom, 50)
+            ConnectionIllustration(kind: .failed)
+            
 
             Spacer()
 
@@ -29,13 +28,6 @@ struct SetupSatelliteView: View {
             Spacer()
 
             linkTrouble
-
-            Button {
-                viewModelSetup.connectDevice()
-            } label: {
-                Text("[Simulate device]")
-            }
-
         }
     }
 
@@ -53,13 +45,13 @@ struct SetupSatelliteView: View {
 
     private var instructions: some View {
         Group {
-            Text("Get Started")
+            Text("Failed to connect")
                 .font(Fonts.bold.size24)
             Text("Press and hold the button on your device")
                 .font(Fonts.book.size16)
         }
         .multilineTextAlignment(.center)
-        .padding(.horizontal, 100)
+        .padding(.horizontal, 50)
     }
 
     private var linkTrouble: some View {
@@ -69,8 +61,8 @@ struct SetupSatelliteView: View {
     }
 }
 
-struct SetupSatelliteView_Previews: PreviewProvider {
+struct FailedToConnectView_Previews: PreviewProvider {
     static var previews: some View {
-        SetupSatelliteView()
+        FailedToConnectView()
     }
 }

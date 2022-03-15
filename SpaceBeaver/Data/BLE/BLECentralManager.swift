@@ -11,14 +11,21 @@ import CoreBluetooth.CBPeripheral
 class SpaceBeaverManager: ObservableObject {
     static let shared = SpaceBeaverManager()
 
-    @Published var isConnected: Bool = false
+    enum Connectivity {
+        case scanning
+        case connected
+        case unconnected
+    }
+
+    @Published var isConnected: Connectivity = .scanning
 
     let btManager = BluetoothManager()
+    let logger = EventsLogger()
 
     let scanner: PeripheralScanner
     var peripheral: Peripheral? = nil
 
-    let MAIN_SERVICE2 = CBUUID(string: "7434FFFF-6D57-6854-6551-624D2B482845")
+    //let MAIN_SERVICE2 = CBUUID(string: "7434FFFF-6D57-6854-6551-624D2B482845")
 
     let MAIN_SERVICE1 = CBUUID(string: ServiceIdentifiers.uartServiceUUIDString)
 
@@ -26,6 +33,7 @@ class SpaceBeaverManager: ObservableObject {
         scanner = PeripheralScanner(services: [MAIN_SERVICE1])
         scanner.scannerDelegate = self
         btManager.delegate = self
+        btManager.logger = logger
         scanner.startScanning()
     }
 
@@ -64,12 +72,12 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
 
     func didConnectPeripheral(deviceName aName : String?) {
         print("didConnectPeripheral \(aName)")
-        isConnected = true
+        isConnected = .connected
     }
 
     func didDisconnectPeripheral() {
         print("didDisconnectPeripheral")
-        isConnected = false
+        isConnected = .unconnected
     }
 
     func peripheralReady() {}

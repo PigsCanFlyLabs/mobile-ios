@@ -11,5 +11,13 @@ class DialogsViewModel: ObservableObject {
 
     static let shared = DialogsViewModel()
 
-    @Published var openedDialogs: [Dialog] = [Dialog.dummy1, Dialog.dummy2, Dialog.dummy3]
+    let storeDialogs = DialogsStore.makeStore()
+
+    @Published var openedDialogs: [Dialog] = []
+
+    init() {
+        self.storeDialogs.subscribe { [weak self] (result) in
+            self?.openedDialogs = result
+        }
+    }
 }

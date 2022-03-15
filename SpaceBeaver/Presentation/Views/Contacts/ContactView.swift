@@ -10,6 +10,15 @@ import SwiftUI
 struct ContactView: View {
     let contact: Contact
 
+    @State var blocked: Bool = false
+
+    init(contact: Contact) {
+        self.contact = contact
+        self._blocked = State(initialValue: contact.blocked)
+    }
+
+    @ObservedObject private var viewModelContacts = ContactsViewModel.shared
+    
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -90,10 +99,13 @@ struct ContactView: View {
     }
 
     private var actionView: some View {
-        Button(action: {}) {
-            Text("Block this contact")
+        Button(action: {
+            blocked.toggle()
+            viewModelContacts.toggleBlockContact(contact: contact)
+        }) {
+            Text(blocked ? "Unblock this contact" : "Block this contact")
                 .font(Fonts.book.size18)
-                .foregroundColor(Color.red)
+                .foregroundColor(blocked ? Color.black : Color.red)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .background(Colors.colorGrey)

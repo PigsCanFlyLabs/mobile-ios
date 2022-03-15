@@ -12,7 +12,8 @@ class SetupViewModel: ObservableObject {
 
     enum Flow {
         case waitingForDevice
-        case waitingForConnection
+        case noConnectionWithDevice
+        case registerDevice
         case finished
     }
 
@@ -21,12 +22,17 @@ class SetupViewModel: ObservableObject {
     private var cancellable: AnyCancellable?
 
     init() {
-        cancellable = scanner.$isConnected.sink { [weak self] value in
+        cancellable = scanner.$isConnected.sink { [weak self] state in
             guard let self = self else { return }
-            if value {
-                self.flow = .waitingForConnection
+            switch state {
+            case .scanning:
+                ()
+            case .connected:
+                self.flow = .registerDevice
                 let deviceName = self.scanner.peripheral?.peripheral.name ?? "?"
                 self.connected = Device(deviceID: deviceName)
+            case .unconnected:
+                self.flow = .noConnectionWithDevice
             }
         }
     }
@@ -39,7 +45,7 @@ class SetupViewModel: ObservableObject {
     var isSetupFinished: Bool { flow == .finished }
 
     func connectDevice() {
-        flow = .waitingForConnection
+        flow = .registerDevice
         connected = Device.dummy
     }
 

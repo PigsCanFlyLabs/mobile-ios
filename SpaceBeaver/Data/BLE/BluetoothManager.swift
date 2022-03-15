@@ -164,6 +164,23 @@ class BluetoothManager: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate
     func isConnected() -> Bool {
         return connected
     }
+
+    func send(length: Data, message: Data) {
+        guard let uartRXCharacteristic = uartRXCharacteristic else {
+            log(withLevel: .warning, andMessage: "UART RX Characteristic not found")
+            return
+        }
+
+        // Check what kind of Write Type is supported. By default it will try Without Response.
+        // If the RX charactereisrtic have Write property the Write Request type will be used.
+        let type: CBCharacteristicWriteType = uartRXCharacteristic.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
+        let mtu  = bluetoothPeripheral?.maximumWriteValueLength(for: type) ?? 20
+
+        // The following code will split the text into packets
+//        aText.split(by: mtu).forEach {
+//            send(text: $0, withType: type)
+//        }
+    }
     
     /**
      * This method sends the given test to the UART RX characteristic.

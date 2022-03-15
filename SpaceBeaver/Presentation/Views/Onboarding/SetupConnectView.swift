@@ -18,7 +18,7 @@ struct SetupConnectView: View {
 
             Spacer()
 
-            ConnectionIllustration()
+            ConnectionIllustration(kind: .success)
 
             Spacer()
 
@@ -47,11 +47,11 @@ struct SetupConnectView: View {
         Group {
             Text("Welcome, ")
                 .foregroundColor(Colors.colorAccent)
-                .font(.system(size: 32))
+                .font(Fonts.bold.size32)
 
             Text("Space Beaver")
                 .foregroundColor(Colors.colorAccent)
-                .font(.system(size: 50))
+                .font(Fonts.bold.size50)
         }
     }
 

@@ -11,6 +11,7 @@ enum Colors {
     static let colorAccent = Color("AccentColor")
     static let colorGrey = Color("AppGrey")
     static let colorGreyText = Color("TextGrey")
+    static let colorMidGrey = Color("MidGrey")
     static let colorBlack = Color.black
     static let colorGreen = Color("AppGreen")
 }
@@ -21,6 +22,7 @@ enum Images {
     static let satellite = Image("satellite")
     static let device = Image("device")
     static let checkmart = Image("checkmart")
+    static let error = Image("error")
 }
 
 enum Icons {

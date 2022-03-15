@@ -29,12 +29,12 @@ struct DialogRow: View {
                         .font(Fonts.medium.size18)
 
                     Spacer()
-                    Text("11:02am")
+                    Text(dialog.lastUpdated, style: .time)
                         .font(Fonts.book.size16)
                         .foregroundColor(Colors.colorGreyText)
                 }
                 HStack {
-                    Text(dialog.messages.last?.text ?? "")
+                    Text(dialog.message)
                         .font(Fonts.book.size16)
                         .multilineTextAlignment(.leading)
                     Spacer()

@@ -25,7 +25,9 @@ struct ContentView: View {
             switch viewModelSetup.flow {
             case .waitingForDevice:
                 SetupSatelliteView()
-            case .waitingForConnection:
+            case .noConnectionWithDevice:
+                FailedToConnectView()
+            case .registerDevice:
                 SetupConnectView()
             case .finished:
                 TabsView()
