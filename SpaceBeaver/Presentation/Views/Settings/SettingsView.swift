@@ -9,7 +9,8 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject private var viewModelSetup = SetupViewModel.shared
-
+    @State private var isPresentedLogsScreen: Bool = false
+    
     var body: some View {
         VStack {
             navBarView
@@ -21,6 +22,7 @@ struct SettingsView: View {
                 blockedView
                 privacyView
                 helpView
+                logsView
                 actionView
             }
             .padding(.horizontal)
@@ -28,6 +30,9 @@ struct SettingsView: View {
             Spacer()
         }
         .navigationBarHidden(true)
+        .background(EmptyView().fullScreenCover(isPresented: $isPresentedLogsScreen, onDismiss: {}, content: {
+            LogsView()
+        }))
     }
 
     var navBarView: some View {
@@ -125,6 +130,18 @@ struct SettingsView: View {
             viewModelSetup.disconnectDevice()
         } else {
             viewModelSetup.findDevice()
+        }
+    }
+
+    private var logsView: some View {
+        Button(action: { isPresentedLogsScreen.toggle() }) {
+            Text("Logs")
+                .font(Fonts.book.size18)
+                .foregroundColor(Color.black)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .background(Colors.colorGrey)
+                .cornerRadius(10)
         }
     }
 }

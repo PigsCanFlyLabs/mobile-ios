@@ -14,10 +14,29 @@ class DialogsViewModel: ObservableObject {
     let storeDialogs = DialogsStore.makeStore()
 
     @Published var openedDialogs: [Dialog] = []
+    var fetchedDialogs: [Dialog]? = nil
+
+    private var subscribed = true
 
     init() {
         self.storeDialogs.subscribe { [weak self] (result) in
-            self?.openedDialogs = result
+            if self?.subscribed ?? true {
+                self?.openedDialogs = result
+            } else {
+                self?.fetchedDialogs = result
+            }
         }
     }
+
+    func subscribe() {
+        subscribed = true
+        if let prefetched = fetchedDialogs {
+            openedDialogs = prefetched
+            fetchedDialogs = nil
+        }
+    }
+    func unsubscribe() {
+        subscribed = false
+    }
+
 }

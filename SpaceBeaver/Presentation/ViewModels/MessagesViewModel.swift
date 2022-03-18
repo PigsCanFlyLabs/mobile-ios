@@ -13,27 +13,41 @@ class MessagesViewModel: ObservableObject {
 
     @Published var dialog: Dialog?
 
+    @Published var storeMessages: MessagesStore?
+
     @Published var messages: [Message] = []
 
     @Published var scrollToLastMessage = true
 
     func openDialog(_ dialog: Dialog) {
+        DialogsViewModel.shared.unsubscribe()
         self.dialog = dialog
 //        self.messages = dialog.messages
+
+        storeMessages = MessagesStore.makeStore(for: dialog.contact.contactId, name: dialog.contact.title, contact: dialog.contact.phoneNumber ?? "")
+        storeMessages?.subscribe { [weak self] (result) in
+            self?.messages = result
+        }
     }
 
     func closeDialog() {
+        DialogsViewModel.shared.subscribe()
         self.dialog = nil
         self.messages = []
+        self.storeMessages = nil
     }
 
     func loadPreviousMessages() {
         self.scrollToLastMessage = false
-        self.messages.insert(Message(id: UUID(), text: "Added message", kind: .incoming, updated: Date()), at: 0)
+//        self.messages.insert(Message(id: UUID(), text: "Added message", kind: .incoming, updated: Date()), at: 0)
     }
 
-    func sendMessage(text: String) {
-        self.messages.append(Message(id: UUID(), text: text, kind: .outgoing, updated: Date()))
+    func sendMessage(text: String, in dialog: Dialog) {
+        self.scrollToLastMessage = true
+        let to = dialog.contact
+        guard let dialog = DataManager.shared.storage?.loadDialog(with: to.contactId, name: to.title, contact: to.phoneNumber ?? "") else { return }
+//        self.messages.append(Message(id: UUID(), text: text, kind: .outgoing, updated: Date()))
+        DataManager.shared.storage?.addNewMessage(text: text, dialog: dialog)
     }
 
     func sendMessage(text: String, to: Contact) {
@@ -42,6 +56,16 @@ class MessagesViewModel: ObservableObject {
 
         DataManager.shared.storage?.addNewMessage(text: text, dialog: dialog)
         
-        self.messages.append(Message(id: UUID(), text: text, kind: .outgoing, updated: Date()))
+//        self.messages.append(Message(id: UUID(), text: text, kind: .outgoing, updated: Date()))
+    }
+
+    func receivedMessage(text: String, from: String) {
+        self.scrollToLastMessage = true
+        
+        guard let dialog = DataManager.shared.storage?.loadDialog(with: from) else { return }
+
+        DataManager.shared.storage?.addNewMessage(text: text, dialog: dialog, type: .incoming)
+
+//        self.messages.append(Message(id: UUID(), text: text, kind: .incoming, updated: Date()))
     }
 }

@@ -4,23 +4,27 @@ PODS:
     - AppCenter/Core
   - iOSDFULibrary (4.11.1):
     - ZIPFoundation (= 0.9.11)
+  - SwiftProtobuf (1.18.0)
   - ZIPFoundation (0.9.11)
 
 DEPENDENCIES:
   - AppCenter/Distribute
   - iOSDFULibrary
+  - SwiftProtobuf (~> 1.0)
 
 SPEC REPOS:
   trunk:
     - AppCenter
     - iOSDFULibrary
+    - SwiftProtobuf
     - ZIPFoundation
 
 SPEC CHECKSUMS:
   AppCenter: b0b6f1190215b5f983c42934db718f3b46fff3c0
   iOSDFULibrary: 3500ac00451aa7d8ec48a752e91099669a2c1d27
+  SwiftProtobuf: c3c12645230d9b09c72267e0de89468c5543bd86
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: a828d4cc785cc5b3139aff04a75a7e4c7b9e6dec
+PODFILE CHECKSUM: f35d7d5bfd7923fbc52caaccd2ce864df513721e
 
 COCOAPODS: 1.11.2

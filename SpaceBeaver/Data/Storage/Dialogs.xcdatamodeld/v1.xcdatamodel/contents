@@ -15,13 +15,13 @@
     <entity name="Person" representedClassName="CDPerson" syncable="YES">
         <attribute name="blocked" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="contact" optional="YES" attributeType="String"/>
-        <attribute name="contactId" attributeType="String"/>
+        <attribute name="contactId" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="dialogs" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Dialog" inverseName="person" inverseEntity="Dialog"/>
     </entity>
     <elements>
-        <element name="Person" positionX="-5.64068603515625" positionY="2860.220977783203" width="128" height="104"/>
         <element name="Dialog" positionX="-9" positionY="2889" width="128" height="89"/>
         <element name="Message" positionX="-9" positionY="2916" width="128" height="89"/>
+        <element name="Person" positionX="-5.64068603515625" positionY="2860.220977783203" width="128" height="104"/>
     </elements>
 </model>

@@ -15,7 +15,7 @@ extension Optional where Wrapped == String {
 }
 
 extension String {
-    func tripWhiteSpaces() -> String {
+    func trimWhiteSpaces() -> String {
         return self.trimmingCharacters(in: .whitespaces)
     }
 

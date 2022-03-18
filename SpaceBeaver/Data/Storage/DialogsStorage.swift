@@ -75,12 +75,33 @@ extension DialogsStorage {
         return frc
     }
 
-    public func loadDialog(with contactId: String, name: String, contact: String) -> CDDialog {
+    public func loadDialog(with contactId: String?, name: String, contact: String, auto: Bool = true) -> CDDialog {
         guard let person = CDPerson.load(with: writeContext, contactId: contactId, contact: contact) else {
             let newPerson = CDPerson.insertOrUpdate(into: writeContext, contactId: contactId, contactName: name, contact: contact)
             let newDialog = CDDialog.insertOrUpdate(into: writeContext, person: newPerson)
             _ = writeContext.saveOrRollback()
             return newDialog
+        }
+        if let dialog = CDDialog.load(with: writeContext, person: person) {
+            return dialog
+        }
+
+        let dialog = CDDialog.insertOrUpdate(into: writeContext, person: person)
+        _ = writeContext.saveOrRollback()
+        return dialog
+    }
+
+    public func loadDialog(with contact: String) -> CDDialog {
+        guard let person = CDPerson.load(with: writeContext, contactId: nil, contact: contact) else {
+            let contactOnPhone = CNContactsRepository().findContact(by: contact)
+            let contactName = contactOnPhone?.fullName ?? contact
+            let newPerson = CDPerson.insertOrUpdate(into: writeContext, contactId: contactOnPhone?.identifier, contactName: contactName, contact: contact)
+            let newDialog = CDDialog.insertOrUpdate(into: writeContext, person: newPerson)
+            _ = writeContext.saveOrRollback()
+            return newDialog
+        }
+        if let dialog = CDDialog.load(with: writeContext, person: person) {
+            return dialog
         }
         let dialog = CDDialog.insertOrUpdate(into: writeContext, person: person)
         _ = writeContext.saveOrRollback()
@@ -99,6 +120,8 @@ extension DialogsStorage {
     public func makeMessages(for dialog: CDDialog) -> NSFetchedResultsController<CDMessage> {
         let request = CDMessage.sortedFetchRequest
         request.returnsObjectsAsFaults = false
+        let filterByUserIdAndCaller = NSPredicate(format: "dialog == %@", dialog)
+        request.predicate = filterByUserIdAndCaller
         let frc = NSFetchedResultsController(fetchRequest: request, managedObjectContext: readContext, sectionNameKeyPath: nil, cacheName: nil)
         return frc
     }
@@ -106,7 +129,7 @@ extension DialogsStorage {
 
 //MARK: - Person
 extension DialogsStorage {
-    public func toggleBlocked(for contactId: String, contact: String) {
+    public func toggleBlocked(for contactId: String?, contact: String) {
         guard let contact = CDPerson.load(with: writeContext, contactId: contactId, contact: contact) else { return }
 
         guard let dialog = CDDialog.load(with: writeContext, person: contact) else { return }

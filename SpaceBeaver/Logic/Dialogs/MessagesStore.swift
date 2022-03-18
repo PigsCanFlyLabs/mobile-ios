@@ -18,7 +18,7 @@ class MessagesStore: NSObject {
         super.init()
     }
 
-    static func makeStore(for contactId: String, name: String, contact: String) -> MessagesStore {
+    static func makeStore(for contactId: String?, name: String, contact: String) -> MessagesStore {
         let storage = DataManager.shared.storage!
         let store = MessagesStore()
 

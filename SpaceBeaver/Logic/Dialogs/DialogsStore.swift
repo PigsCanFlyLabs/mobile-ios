@@ -48,9 +48,10 @@ class DialogsStore: NSObject {
 
     func makeViewModel(_ source: CDDialog) -> Dialog? {
 
-        let contactId = source.person?.contactId ?? "undefined"
-        let name = source.person?.name ?? "undefined"
+        let contactId = source.person?.contactId
         let phone = source.person?.contact ?? "undefined"
+        let name = source.person?.name ?? phone
+
         let blocked = source.person?.blocked ?? false
 
         let contact = Contact(contactId: contactId, title: name, phoneNumber: phone, email: nil, blocked: blocked)

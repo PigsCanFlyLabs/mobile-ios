@@ -17,12 +17,17 @@ public class CDPerson: NSManagedObject {
 extension CDPerson : Managed {
     static func load(
         with context: NSManagedObjectContext,
-        contactId: String,
+        contactId: String?,
         contact: String
     ) -> CDPerson? {
         let request = NSFetchRequest<Self>(entityName: entityName)
-        let filterByContactId = NSPredicate(format: "contactId == %@ AND contact == %@", contactId, contact)
-        request.predicate = filterByContactId
+        if let contactId = contactId {
+            let filterByContactId = NSPredicate(format: "contactId == %@ AND contact == %@", contactId, contact)
+            request.predicate = filterByContactId
+        } else {
+            let filterByContactId = NSPredicate(format: "contact == %@", contact)
+            request.predicate = filterByContactId
+        }
         do {
             let result = try context.fetch(request)
 
@@ -38,7 +43,7 @@ extension CDPerson : Managed {
 
     static func insertOrUpdate(
         into context: NSManagedObjectContext,
-        contactId: String,
+        contactId: String?,
         contactName: String,
         contact: String
     ) -> CDPerson {

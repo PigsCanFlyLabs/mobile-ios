@@ -9,16 +9,6 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject private var viewModelSetup = SetupViewModel.shared
-
-    init(){
-        for family in UIFont.familyNames {
-             print(family)
-
-             for names in UIFont.fontNames(forFamilyName: family){
-             print("== \(names)")
-             }
-        }
-    }
     
     var body: some View {
         Group {

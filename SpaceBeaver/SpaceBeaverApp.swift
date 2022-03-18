@@ -24,5 +24,6 @@ struct SpaceBeaverApp: App {
 
 
 struct ProjEnvironment {
+    static let appId: Int16 = 1020
     static let secretAppCenter = "3251ae1e-aed4-4ca1-a995-c4e1c0305369"
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct DialogView: View {
     @Environment(\.presentationMode) var presentationMode
 
@@ -34,6 +35,9 @@ struct DialogView: View {
 
         .task {
             viewModel.openDialog(dialog)
+        }
+        .onDisappear {
+            viewModel.closeDialog()
         }
     }
 
@@ -93,7 +97,7 @@ struct DialogView: View {
             .padding(.horizontal)
             .padding(.vertical)
             .onSubmit {
-                viewModel.sendMessage(text: message)
+                viewModel.sendMessage(text: message, in: dialog)
                 message = ""
             }
     }

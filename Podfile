@@ -7,6 +7,9 @@ target 'SpaceBeaver' do
 
   pod 'iOSDFULibrary'
 
+  # Proto
+  pod 'SwiftProtobuf', '~> 1.0'
+
   # Pods for SpaceBeaver
   pod 'AppCenter/Distribute'
 

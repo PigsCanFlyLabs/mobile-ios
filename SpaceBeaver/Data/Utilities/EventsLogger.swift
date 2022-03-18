@@ -34,14 +34,14 @@ import UIKit
 import iOSDFULibrary
 
 
-struct LogMessage {
+struct LogMessage: Identifiable {
+    let id = UUID()
     let level: LogType
     let message: String
     let time: Date
 }
 
 @objc protocol LogPresenter: LoggerDelegate {
-//    var attributedLog: NSAttributedString { get }
     func reset()
 }
 
@@ -50,7 +50,7 @@ class EventsLogger {
 
     var filter: [LogType] = LogType.allCases
 
-    private var filteredData: [LogMessage] {
+    var filteredData: [LogMessage] {
         guard filter.count != LogType.allCases.count else { return logs }
         return logs.filter { filter.contains($0.level) }
     }

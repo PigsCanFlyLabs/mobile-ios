@@ -20,7 +20,8 @@ class SpaceBeaverManager: ObservableObject {
     @Published var isConnected: Connectivity = .scanning
 
     let btManager = BluetoothManager()
-    let logger = EventsLogger()
+    var communicator: DeviceCommunicator? = nil
+    @Published var logger = EventsLogger()
 
     let scanner: PeripheralScanner
     var peripheral: Peripheral? = nil
@@ -35,10 +36,10 @@ class SpaceBeaverManager: ObservableObject {
         btManager.delegate = self
         btManager.logger = logger
         scanner.startScanning()
+        communicator = DeviceCommunicator(device: self)
     }
 
     func connect(peripheral: Peripheral) {
-//        scanner.stopScanning()
         self.peripheral = peripheral
         btManager.connectPeripheral(peripheral: peripheral.peripheral)
     }
@@ -48,10 +49,7 @@ class SpaceBeaverManager: ObservableObject {
 
 extension SpaceBeaverManager: PeripheralScannerDelegate {
     func statusChanges(_ status: PeripheralScanner.Status) {
-        print(status)
-//        if case .connecting(let p) = status {
-//           // delegate?.requestConnection(to: p)
-//        }
+        logger.log(level: .verbose, message: "[Peripheral] status changes state to: \(status)")
     }
 
     func newPeripherals(_ peripherals: [Peripheral], willBeAddedTo existing: [Peripheral]) {
@@ -66,23 +64,35 @@ extension SpaceBeaverManager: PeripheralScannerDelegate {
 }
 
 extension SpaceBeaverManager: BluetoothManagerDelegate {
-    func requestedConnect(peripheral: CBPeripheral) {
+    func received(string: String) {
+        communicator?.readFromDevice(line: string)
+    }
 
+    func requestedConnect(peripheral: CBPeripheral) {
+        logger.log(level: .verbose, message: "[Peripheral] request connect \(peripheral.identifier)")
     }
 
     func didConnectPeripheral(deviceName aName : String?) {
-        print("didConnectPeripheral \(aName)")
+        logger.log(level: .verbose, message: "[Peripheral] did connect peripheral : \(aName ?? "Undefined")")
         isConnected = .connected
     }
 
     func didDisconnectPeripheral() {
-        print("didDisconnectPeripheral")
+        logger.log(level: .verbose, message: "[Peripheral] disconnectUndefined")
         isConnected = .unconnected
     }
 
-    func peripheralReady() {}
+    func peripheralReady() {
+        logger.log(level: .verbose, message: "[Peripheral] ready")
+    }
 
     func peripheralNotSupported() {
-        print("peripheralNotSupported")
+        logger.log(level: .verbose, message: "[Peripheral] not supported")
+    }
+}
+
+extension SpaceBeaverManager: SpaceBeaverWritable {
+    func writeToDevice(data: Data) {
+        btManager.send(data: data)
     }
 }

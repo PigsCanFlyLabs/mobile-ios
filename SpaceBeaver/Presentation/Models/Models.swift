@@ -9,7 +9,7 @@ import Foundation
 
 struct Contact: Identifiable {
     let id = UUID()
-    let contactId: String
+    let contactId: String?
     let title: String
 
     let phoneNumber: String?

@@ -10,8 +10,13 @@ import SwiftUI
 struct DialogRow: View {
     let dialog: Dialog
 
+    @State var presentDialog = false
+    @ObservedObject private var viewModel = MessagesViewModel.shared
+
     var body: some View {
-        NavigationLink(destination: DialogView(dialog: dialog)) {
+        Button(action: {
+            presentDialog.toggle()
+        }) {
             content
                 .padding(.vertical, 15)
                 .listRowSeparator(.hidden)
@@ -22,6 +27,12 @@ struct DialogRow: View {
 
     var content: some View {
         HStack(spacing: 16) {
+            NavigationLink(destination: DialogView(dialog: dialog), isActive: $presentDialog) {
+                 EmptyView()
+            }
+            .isDetailLink(false)
+            .hidden()
+
             AvatarView(contact: dialog.contact)
             VStack(spacing: 4) {
                 HStack {

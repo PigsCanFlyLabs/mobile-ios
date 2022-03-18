@@ -10,6 +10,7 @@ import SwiftUI
 struct MessagesView: View {
 
     @ObservedObject private var viewModel = DialogsViewModel.shared
+    @ObservedObject private var viewModelMessages = MessagesViewModel.shared
 
     @State private var searchText = ""
     @State private var isPresentedAddScreen: Bool = false
@@ -37,6 +38,10 @@ struct MessagesView: View {
 
     var dialogsView: some View {
         ScrollView {
+            Button(action: {
+                MessagesViewModel.shared.receivedMessage(text: "Hi test", from: "432423423")
+            }, label: { Text("[Simulate received]") })
+
             LazyVStack {
                 ForEach(visibleDialogs) { item in
                     DialogRow(dialog: item)
