@@ -9,6 +9,27 @@ import Foundation
 
 class CommandBuilder {
 
+    func prepareQuery() -> (header: Data, body: Data) {
+        let commandData = "Q".data(using: .utf8)!
+
+        var value = UInt32(littleEndian: UInt32(commandData.count))
+        let array = withUnsafeBytes(of: &value) { Array($0) }
+        let data = Data(array)
+
+        return (data, commandData)
+    }
+
+    func prepareSetProfile(profile: String) -> (header: Data, body: Data) {
+        let commandData = "P\(profile)".data(using: .utf8)!
+
+        var value = UInt32(littleEndian: UInt32(commandData.count))
+        let array = withUnsafeBytes(of: &value) { Array($0) }
+        let data = Data(array)
+
+        return (data, commandData)
+    }
+
+
     func prepareMessageLength(text: String, receipient: String) -> (header: Data, body: Data) {
         let messageData = prepareMessageCommand(text: text, to: receipient)
 

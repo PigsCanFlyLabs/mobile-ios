@@ -19,12 +19,18 @@ class SpaceBeaverManager: ObservableObject {
 
     @Published var isConnected: Connectivity = .scanning
 
+    @Published var profileId: String?
+    @Published var registerDeviceId: String?
+
+    @Published var hasToFetchDeviceId: Bool = false
+
     let btManager = BluetoothManager()
     var communicator: DeviceCommunicator? = nil
     @Published var logger = EventsLogger()
 
     let scanner: PeripheralScanner
     var peripheral: Peripheral? = nil
+
 
     //let MAIN_SERVICE2 = CBUUID(string: "7434FFFF-6D57-6854-6551-624D2B482845")
 
@@ -44,6 +50,21 @@ class SpaceBeaverManager: ObservableObject {
         btManager.connectPeripheral(peripheral: peripheral.peripheral)
     }
 
+    func sendMessage(to: String, text: String) {
+        let message = CommandMessage(to: to, text: text)
+        communicator?.send(command: message)
+    }
+
+    func sendQueryProfile() {
+        let query = QueryDevice()
+        communicator?.send(command: query)
+    }
+
+    func sendSetProfile() {
+        guard let id = profileId else { return }
+        let profile = SetProfile(profileId: id)
+        communicator?.send(command: profile)
+    }
 }
 
 
@@ -75,6 +96,7 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
     func didConnectPeripheral(deviceName aName : String?) {
         logger.log(level: .verbose, message: "[Peripheral] did connect peripheral : \(aName ?? "Undefined")")
         isConnected = .connected
+        sendQueryProfile()
     }
 
     func didDisconnectPeripheral() {

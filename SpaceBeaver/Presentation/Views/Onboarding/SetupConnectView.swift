@@ -10,6 +10,8 @@ import SwiftUI
 struct SetupConnectView: View {
     @ObservedObject private var viewModelSetup = SetupViewModel.shared
 
+    var code: String { viewModelSetup.deviceId ?? "<MISSING>" }
+
     var body: some View {
         VStack {
             Spacer()
@@ -60,7 +62,7 @@ struct SetupConnectView: View {
             Text("Connected")
                 .font(.system(size: 24))
 
-            Text("Go to [www.spacebeaver.com/connect](https://www.spacebeaver.com/connect) and type in 85GBJ3 to select your plan")
+            Text("Go to [www.spacebeaver.com/connect](https://www.spacebeaver.com/connect) and type in \(code) to select your plan")
                 .multilineTextAlignment(.center)
         }
         .multilineTextAlignment(.center)

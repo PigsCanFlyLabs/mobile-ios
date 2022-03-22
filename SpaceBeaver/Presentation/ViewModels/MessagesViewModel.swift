@@ -39,15 +39,14 @@ class MessagesViewModel: ObservableObject {
 
     func loadPreviousMessages() {
         self.scrollToLastMessage = false
-//        self.messages.insert(Message(id: UUID(), text: "Added message", kind: .incoming, updated: Date()), at: 0)
     }
 
     func sendMessage(text: String, in dialog: Dialog) {
         self.scrollToLastMessage = true
         let to = dialog.contact
         guard let dialog = DataManager.shared.storage?.loadDialog(with: to.contactId, name: to.title, contact: to.phoneNumber ?? "") else { return }
-//        self.messages.append(Message(id: UUID(), text: text, kind: .outgoing, updated: Date()))
         DataManager.shared.storage?.addNewMessage(text: text, dialog: dialog)
+        SpaceBeaverManager.shared.sendMessage(to: to.phoneNumber ?? "", text: text)
     }
 
     func sendMessage(text: String, to: Contact) {
@@ -55,8 +54,7 @@ class MessagesViewModel: ObservableObject {
         guard let dialog = DataManager.shared.storage?.loadDialog(with: to.contactId, name: to.title, contact: to.phoneNumber ?? "") else { return }
 
         DataManager.shared.storage?.addNewMessage(text: text, dialog: dialog)
-        
-//        self.messages.append(Message(id: UUID(), text: text, kind: .outgoing, updated: Date()))
+        SpaceBeaverManager.shared.sendMessage(to: to.phoneNumber ?? "", text: text)
     }
 
     func receivedMessage(text: String, from: String) {

@@ -19,22 +19,37 @@ class SetupViewModel: ObservableObject {
 
     static let shared = SetupViewModel()
 
-    private var cancellable: AnyCancellable?
+    @Published var deviceId: String? = nil
 
+
+    private var cancellables = Set<AnyCancellable>()
     init() {
-        cancellable = scanner.$isConnected.sink { [weak self] state in
+        scanner.$isConnected.sink { [weak self] state in
             guard let self = self else { return }
             switch state {
             case .scanning:
                 ()
             case .connected:
-                self.flow = .registerDevice
-                let deviceName = self.scanner.peripheral?.peripheral.name ?? "?"
-                self.connected = Device(deviceID: deviceName)
+                ()
             case .unconnected:
                 self.flow = .noConnectionWithDevice
             }
         }
+        .store(in: &cancellables)
+
+        scanner.$profileId.sink { [weak self] phoneId in
+            guard let phoneid = phoneId else { return }
+            self?.connected = Device(deviceID: phoneid)
+            self?.flow = .finished
+        }
+        .store(in: &cancellables)
+
+        scanner.$registerDeviceId.sink { [weak self] deviceId in
+            guard let deviceId = deviceId else { return }
+            self?.flow = .registerDevice
+            self?.deviceId = deviceId
+        }
+        .store(in: &cancellables)
     }
 
     let scanner = SpaceBeaverManager()
