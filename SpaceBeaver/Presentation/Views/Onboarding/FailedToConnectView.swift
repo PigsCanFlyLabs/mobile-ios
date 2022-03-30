@@ -9,7 +9,8 @@ import SwiftUI
 
 struct FailedToConnectView: View {
     @ObservedObject private var viewModelSetup = SetupViewModel.shared
-
+    @State private var isPresentedLogsScreen: Bool = false
+    
     var body: some View {
         VStack {
             Spacer()
@@ -28,7 +29,15 @@ struct FailedToConnectView: View {
             Spacer()
 
             linkTrouble
+            Button {
+                isPresentedLogsScreen.toggle()
+            } label: {
+                Text("[Show logs]")
+            }
         }
+        .background(EmptyView().fullScreenCover(isPresented: $isPresentedLogsScreen, onDismiss: {}, content: {
+            LogsView()
+        }))
     }
 
     private var header: some View {

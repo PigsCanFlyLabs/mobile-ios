@@ -74,11 +74,13 @@ extension SpaceBeaverManager: PeripheralScannerDelegate {
     }
 
     func newPeripherals(_ peripherals: [Peripheral], willBeAddedTo existing: [Peripheral]) {
-
+        logger.log(level: .verbose, message: "[Peripheral] newPeripherals found")
     }
 
     func peripherals(_ peripherals: [Peripheral], addedTo old: [Peripheral]) {
         if let autoconnected = peripherals.first {
+
+            logger.log(level: .verbose, message: "[Peripheral] trying to connect to first found peripheral \(autoconnected.name) ...")
             connect(peripheral: autoconnected)
         }
     }

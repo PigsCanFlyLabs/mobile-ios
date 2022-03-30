@@ -11,6 +11,8 @@ struct SetupSatelliteView: View {
 
     @ObservedObject private var viewModelSetup = SetupViewModel.shared
 
+    @State private var isPresentedLogsScreen: Bool = false
+
     var body: some View {
         VStack {
             Spacer()
@@ -35,8 +37,15 @@ struct SetupSatelliteView: View {
             } label: {
                 Text("[Simulate device]")
             }
-
+            Button {
+                isPresentedLogsScreen.toggle()
+            } label: {
+                Text("[Show logs]")
+            }
         }
+        .background(EmptyView().fullScreenCover(isPresented: $isPresentedLogsScreen, onDismiss: {}, content: {
+            LogsView()
+        }))
     }
 
     private var header: some View {

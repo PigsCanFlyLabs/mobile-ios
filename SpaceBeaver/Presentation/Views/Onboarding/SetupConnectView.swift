@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SetupConnectView: View {
     @ObservedObject private var viewModelSetup = SetupViewModel.shared
+    @State private var isPresentedLogsScreen: Bool = false
 
     var code: String { viewModelSetup.deviceId ?? "<MISSING>" }
 
@@ -42,7 +43,15 @@ struct SetupConnectView: View {
                 .background(Colors.colorAccent)
                 .cornerRadius(40)
             }
+            Button {
+                isPresentedLogsScreen.toggle()
+            } label: {
+                Text("[Show logs]")
+            }
         }
+        .background(EmptyView().fullScreenCover(isPresented: $isPresentedLogsScreen, onDismiss: {}, content: {
+            LogsView()
+        }))
     }
 
     private var header: some View {

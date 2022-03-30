@@ -127,6 +127,7 @@ class BluetoothManager: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate
             return
         }
         connectingPeripheral = p
+        log(withLevel: .verbose, andMessage: "[BluetoothManager] Trying to connect to peripheral...")
         centralManager.connect(p, options: nil)
     }
     
