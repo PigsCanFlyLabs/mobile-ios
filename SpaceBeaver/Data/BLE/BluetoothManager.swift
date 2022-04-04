@@ -72,6 +72,7 @@ enum BluetoothManagerError: Error {
 }
 
 class BluetoothManager: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
+
     
     //MARK: - Delegate Properties
     var delegate: BluetoothManagerDelegate?

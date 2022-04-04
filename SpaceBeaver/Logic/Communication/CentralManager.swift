@@ -11,6 +11,8 @@ import CoreBluetooth.CBPeripheral
 class SpaceBeaverManager: ObservableObject {
     static let shared = SpaceBeaverManager()
 
+    static let deviceIdentifier = UUID(uuidString: "BB539D7A-E05B-6F10-AE77-B3E6A808DB6F")
+
     enum Connectivity {
         case scanning
         case connected
@@ -78,10 +80,16 @@ extension SpaceBeaverManager: PeripheralScannerDelegate {
     }
 
     func peripherals(_ peripherals: [Peripheral], addedTo old: [Peripheral]) {
-        if let autoconnected = peripherals.first {
+        peripherals.forEach { p in
+            logger.log(level: .verbose, message: "[Peripheral] found \(p.peripheral.identifier) ...")
+        }
 
-            logger.log(level: .verbose, message: "[Peripheral] trying to connect to first found peripheral \(autoconnected.name) ...")
-            connect(peripheral: autoconnected)
+        if let peripherlByUID = peripherals.first(where: { p in
+            return p.peripheral.identifier == SpaceBeaverManager.deviceIdentifier
+        }) {
+            logger.log(level: .verbose, message: "[Peripheral] trying to connect to  peripheral \(peripherlByUID.name) ...")
+            logger.log(level: .verbose, message: "[Peripheral] trying to connect to  peripheral \(peripherlByUID.peripheral.identifier) ...")
+            connect(peripheral: peripherlByUID)
         }
     }
 }
