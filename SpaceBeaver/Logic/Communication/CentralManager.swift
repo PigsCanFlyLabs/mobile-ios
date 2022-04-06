@@ -11,7 +11,9 @@ import CoreBluetooth.CBPeripheral
 class SpaceBeaverManager: ObservableObject {
     static let shared = SpaceBeaverManager()
 
-    static let deviceIdentifier = UUID(uuidString: "BB539D7A-E05B-6F10-AE77-B3E6A808DB6F")
+    static let deviceName = "SpaceBeaver (PCFL LLC)"
+
+    static let deviceIdentifier = UUID(uuidString: "4099FD52-F63A-BB47-3ABC-E2C26C942B9")
 
     enum Connectivity {
         case scanning
@@ -85,7 +87,8 @@ extension SpaceBeaverManager: PeripheralScannerDelegate {
         }
 
         if let peripherlByUID = peripherals.first(where: { p in
-            return p.peripheral.identifier == SpaceBeaverManager.deviceIdentifier
+            return (p.peripheral.name == SpaceBeaverManager.deviceName ||
+	              p.peripheral.identifier == SpaceBeaverManager.deviceIdentifier)
         }) {
             logger.log(level: .verbose, message: "[Peripheral] trying to connect to  peripheral \(peripherlByUID.name) ...")
             logger.log(level: .verbose, message: "[Peripheral] trying to connect to  peripheral \(peripherlByUID.peripheral.identifier) ...")
