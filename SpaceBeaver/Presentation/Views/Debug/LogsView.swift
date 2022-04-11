@@ -33,10 +33,12 @@ struct LogsView: View {
 
 
             List(presentedLogs) { line in
-                HStack {
+                VStack(alignment: .leading) {
                     Text(line.time, style: .time)
                         .italic()
                     Text(line.message)
+                        .lineLimit(nil)
+                        .font(.caption)
                 }
             }
 

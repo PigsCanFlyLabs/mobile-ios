@@ -54,6 +54,7 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 }
 
 protocol BluetoothManagerDelegate {
+    func centralManagerDidUpdateState(_ central: CBCentralManager)
     func requestedConnect(peripheral: CBPeripheral)
     func didConnectPeripheral(deviceName aName : String?)
     func didDisconnectPeripheral()
@@ -239,6 +240,7 @@ class BluetoothManager: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate
         }
         
         log(withLevel: .debug, andMessage: "[Callback] Central Manager did update state to: \(state)")
+        delegate?.centralManagerDidUpdateState(central)
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {

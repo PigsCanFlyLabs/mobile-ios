@@ -51,6 +51,14 @@ public struct Peripheral: Hashable, Equatable {
     }
 }
 
+public extension Peripheral {
+    func hasNamePrefix(value: String) -> Bool {
+        let normalizedName = name.lowercased()
+        let normalizedPrefix = value.lowercased()
+        return normalizedName.hasPrefix(normalizedPrefix)
+    }
+}
+
 open class PeripheralScanner: NSObject {
     public enum Status {
         case uninitialized, ready, notReady(CBManagerState), scanning, connecting(Peripheral), connected(Peripheral), failedToConnect(Peripheral, Error?)

@@ -12,6 +12,7 @@ class SpaceBeaverManager: ObservableObject {
     static let shared = SpaceBeaverManager()
 
     static let deviceIdentifier = UUID(uuidString: "BB539D7A-E05B-6F10-AE77-B3E6A808DB6F")
+    static let devicePrefix = "SpaceBeaver"
 
     enum Connectivity {
         case scanning
@@ -33,21 +34,18 @@ class SpaceBeaverManager: ObservableObject {
     let scanner: PeripheralScanner
     var peripheral: Peripheral? = nil
 
-
-    //let MAIN_SERVICE2 = CBUUID(string: "7434FFFF-6D57-6854-6551-624D2B482845")
-
     let MAIN_SERVICE1 = CBUUID(string: ServiceIdentifiers.uartServiceUUIDString)
 
     init() {
-        scanner = PeripheralScanner(services: [MAIN_SERVICE1])
+        scanner = PeripheralScanner(services: [])
         scanner.scannerDelegate = self
         btManager.delegate = self
         btManager.logger = logger
-        scanner.startScanning()
         communicator = DeviceCommunicator(device: self)
     }
 
     func connect(peripheral: Peripheral) {
+        if self.peripheral != nil { return }
         self.peripheral = peripheral
         btManager.connectPeripheral(peripheral: peripheral.peripheral)
     }
@@ -76,7 +74,7 @@ extension SpaceBeaverManager: PeripheralScannerDelegate {
     }
 
     func newPeripherals(_ peripherals: [Peripheral], willBeAddedTo existing: [Peripheral]) {
-        logger.log(level: .verbose, message: "[Peripheral] newPeripherals found")
+//        logger.log(level: .verbose, message: "[Peripheral] newPeripherals found")
     }
 
     func peripherals(_ peripherals: [Peripheral], addedTo old: [Peripheral]) {
@@ -85,7 +83,7 @@ extension SpaceBeaverManager: PeripheralScannerDelegate {
         }
 
         if let peripherlByUID = peripherals.first(where: { p in
-            return p.peripheral.identifier == SpaceBeaverManager.deviceIdentifier
+            return p.hasNamePrefix(value: SpaceBeaverManager.devicePrefix)
         }) {
             logger.log(level: .verbose, message: "[Peripheral] trying to connect to  peripheral \(peripherlByUID.name) ...")
             logger.log(level: .verbose, message: "[Peripheral] trying to connect to  peripheral \(peripherlByUID.peripheral.identifier) ...")
@@ -95,6 +93,15 @@ extension SpaceBeaverManager: PeripheralScannerDelegate {
 }
 
 extension SpaceBeaverManager: BluetoothManagerDelegate {
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        switch central.state {
+        case .poweredOn:
+            scanner.startScanning()
+        default:
+            ()
+        }
+    }
+
     func received(string: String) {
         communicator?.readFromDevice(line: string)
     }
