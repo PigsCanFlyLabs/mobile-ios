@@ -36,6 +36,10 @@ class SpaceBeaverManager: ObservableObject {
 
     let MAIN_SERVICE1 = CBUUID(string: ServiceIdentifiers.uartServiceUUIDString)
 
+    var currentPacketSize: Int = -1
+    var currentPacketBuffer: Data? = nil
+    var handleReceivedString: ((String) -> Void)?
+
     init() {
         scanner = PeripheralScanner(services: [])
         scanner.scannerDelegate = self
@@ -102,7 +106,64 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
         }
     }
 
+    func received(data: Data) {
+        if currentPacketSize <= 0 {
+            // receiving a new packet
+            assert(data.count > 3, "Packet size is less then 4 bytes")
+
+            // Get message length
+            let header = Data(data.prefix(4))
+
+            let length = header.uint32
+            logger.log(level: .verbose, message: "[Peripheral] receiving new packet length [\(length)]")
+
+            currentPacketSize = Int(length)
+            currentPacketBuffer = Data()
+
+            // Remaining in this packet
+            let remainding = data.dropFirst(4)
+            received(data: remainding)
+
+        } else {
+            // Continue receiving data
+            if currentPacketSize >= data.count {
+                currentPacketSize -= data.count
+                currentPacketBuffer?.append(contentsOf: data)
+
+                if currentPacketSize <= 0 {
+                    if let bytesReceived = currentPacketBuffer, let validUTF8String = String(data: bytesReceived, encoding: .utf8) {
+                        received(string: validUTF8String)
+                    }
+                    // Finished
+                    currentPacketBuffer = nil
+                }
+            } else {
+                let partCount = currentPacketSize
+                let partData = Data(data.prefix(currentPacketSize))
+                currentPacketSize = 0
+                currentPacketBuffer?.append(contentsOf: partData)
+
+                if currentPacketSize <= 0 {
+                    if let bytesReceived = currentPacketBuffer, let validUTF8String = String(data: bytesReceived, encoding: .utf8) {
+                        received(string: validUTF8String)
+                    }
+                    // Finished
+                    currentPacketBuffer = nil
+                }
+
+                // Remaining data
+                let remainding = data.dropFirst(partCount)
+                received(data: remainding)
+            }
+        }
+    }
+
     func received(string: String) {
+        if let handler = handleReceivedString {
+            handler(string)
+            return
+        }
+        logger.log(level: .verbose, message: "[Peripheral] received message: \(string)")
         communicator?.readFromDevice(line: string)
     }
 
@@ -133,5 +194,20 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
 extension SpaceBeaverManager: SpaceBeaverWritable {
     func writeToDevice(data: Data) {
         btManager.send(data: data)
+    }
+}
+
+extension Data {
+    func elements <T> () -> [T] {
+        return withUnsafeBytes {
+            Array(UnsafeBufferPointer<T>(start: $0, count: count / MemoryLayout<T>.size))
+        }
+    }
+}
+
+extension Data {
+    var uint32:UInt32 {
+        var data = self
+        return UInt32(littleEndian: data.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<UInt32>) in ptr.pointee })
     }
 }

@@ -36,9 +36,10 @@ struct LogsView: View {
                 VStack(alignment: .leading) {
                     Text(line.time, style: .time)
                         .italic()
+                        .font(.caption)
                     Text(line.message)
                         .lineLimit(nil)
-                        .font(.caption)
+                        .font(.footnote)
                 }
             }
 

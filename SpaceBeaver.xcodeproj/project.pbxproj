@@ -46,6 +46,7 @@
 		1880E09127D246C50052F9B6 /* DialogsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1880E09027D246C50052F9B6 /* DialogsViewModel.swift */; };
 		1880E09427D247590052F9B6 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1880E09327D247590052F9B6 /* Models.swift */; };
 		1880E09727D24E0F0052F9B6 /* UIKit+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1880E09627D24E0F0052F9B6 /* UIKit+Helpers.swift */; };
+		1882C0BC2805877A00A74A73 /* CommunicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1882C0BB2805877A00A74A73 /* CommunicationTests.swift */; };
 		18A5D34C27CE466D00533A41 /* SpaceBeaverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A5D34B27CE466D00533A41 /* SpaceBeaverApp.swift */; };
 		18A5D34E27CE466D00533A41 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A5D34D27CE466D00533A41 /* ContentView.swift */; };
 		18A5D35027CE466F00533A41 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18A5D34F27CE466F00533A41 /* Assets.xcassets */; };
@@ -142,6 +143,7 @@
 		1880E09027D246C50052F9B6 /* DialogsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogsViewModel.swift; sourceTree = "<group>"; };
 		1880E09327D247590052F9B6 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		1880E09627D24E0F0052F9B6 /* UIKit+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Helpers.swift"; sourceTree = "<group>"; };
+		1882C0BB2805877A00A74A73 /* CommunicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicationTests.swift; sourceTree = "<group>"; };
 		18A5D34827CE466D00533A41 /* SpaceBeaver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceBeaver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A5D34B27CE466D00533A41 /* SpaceBeaverApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceBeaverApp.swift; sourceTree = "<group>"; };
 		18A5D34D27CE466D00533A41 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -517,6 +519,7 @@
 			isa = PBXGroup;
 			children = (
 				18AA20B927DCBD1B0038A8AD /* ResponseReaderTests.swift */,
+				1882C0BB2805877A00A74A73 /* CommunicationTests.swift */,
 				18AA20BB27DF35D60038A8AD /* CommandWriterTests.swift */,
 			);
 			path = Communication;
@@ -946,6 +949,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18AA20BC27DF35D60038A8AD /* CommandWriterTests.swift in Sources */,
+				1882C0BC2805877A00A74A73 /* CommunicationTests.swift in Sources */,
 				18AA20BA27DCBD1B0038A8AD /* ResponseReaderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1099,7 +1103,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"SpaceBeaver/Preview Content\"";
 				DEVELOPMENT_TEAM = 2JHM4YSHB5;
 				ENABLE_PREVIEWS = YES;
@@ -1135,7 +1139,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"SpaceBeaver/Preview Content\"";
 				DEVELOPMENT_TEAM = 2JHM4YSHB5;
 				ENABLE_PREVIEWS = YES;

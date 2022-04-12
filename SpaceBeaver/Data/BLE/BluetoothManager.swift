@@ -61,6 +61,7 @@ protocol BluetoothManagerDelegate {
     func peripheralReady()
     func peripheralNotSupported()
     func received(string: String)
+    func received(data: Data)
 }
 
 enum BluetoothManagerError: Error {
@@ -395,12 +396,14 @@ class BluetoothManager: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate
         }
         
         log(withLevel: .info, andMessage: "Notification received from: \(characteristic.uuid.uuidString), with value: 0x\(bytesReceived.hexString)")
-        if let validUTF8String = String(data: bytesReceived, encoding: .utf8) {
-            log(withLevel: .application, andMessage: "\"\(validUTF8String)\" received")
-            delegate?.received(string: validUTF8String)
-        } else {
-            log(withLevel: .application, andMessage: "\"0x\(bytesReceived.hexString)\" received")
-        }
+        delegate?.received(data: bytesReceived)
+
+//        if let validUTF8String = String(data: bytesReceived, encoding: .utf8) {
+//            log(withLevel: .application, andMessage: "\"\(validUTF8String)\" received")
+//            delegate?.received(string: validUTF8String)
+//        } else {
+//            log(withLevel: .application, andMessage: "\"0x\(bytesReceived.hexString)\" received")
+//        }
     }
 }
 
