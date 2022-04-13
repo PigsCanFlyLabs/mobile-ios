@@ -10,12 +10,14 @@ import Foundation
 protocol BaseCommand {
     var header: Data { get }
     var body: Data { get }
+    var description: String { get }
 }
 
 /// Query the device to determine if it's set up. If so returns PHONEID: {phone_id}, if not returns ERROR: "{device_id}" not configured.
 struct QueryDevice: BaseCommand {
     var header: Data
     var body: Data
+    var description: String { "{Query Device}" }
 
     init() {
         let builder = CommandBuilder().prepareQuery()
@@ -27,6 +29,7 @@ struct QueryDevice: BaseCommand {
 struct SetProfile: BaseCommand {
     var header: Data
     var body: Data
+    var description: String { "{Set Profile}" }
 
     init(profileId: String) {
         let builder = CommandBuilder().prepareSetProfile(profile: profileId)
@@ -39,6 +42,7 @@ struct SetProfile: BaseCommand {
 struct CommandMessage: BaseCommand {
     let to: String
     let text: String
+    var description: String { "{Send Message ''\(text)'' ''\(to)''}" }
 
     init(to: String, text: String) {
         self.to = to

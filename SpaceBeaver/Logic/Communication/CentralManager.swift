@@ -13,6 +13,7 @@ class SpaceBeaverManager: ObservableObject {
 
     static let deviceIdentifier = UUID(uuidString: "BB539D7A-E05B-6F10-AE77-B3E6A808DB6F")
     static let devicePrefix = "SpaceBeaver"
+//    static let devicePrefix = "AM"
 
     enum Connectivity {
         case scanning
@@ -29,7 +30,7 @@ class SpaceBeaverManager: ObservableObject {
 
     let btManager = BluetoothManager()
     var communicator: DeviceCommunicator? = nil
-    @Published var logger = EventsLogger()
+    @Published var logger = EventsLogger.shared
 
     let scanner: PeripheralScanner
     var peripheral: Peripheral? = nil
@@ -45,7 +46,7 @@ class SpaceBeaverManager: ObservableObject {
         scanner.scannerDelegate = self
         btManager.delegate = self
         btManager.logger = logger
-        communicator = DeviceCommunicator(device: self)
+        communicator = DeviceCommunicator(device: self, logger: logger)
     }
 
     func connect(peripheral: Peripheral) {
@@ -82,9 +83,9 @@ extension SpaceBeaverManager: PeripheralScannerDelegate {
     }
 
     func peripherals(_ peripherals: [Peripheral], addedTo old: [Peripheral]) {
-        peripherals.forEach { p in
-            logger.log(level: .verbose, message: "[Peripheral] found \(p.peripheral.identifier) ...")
-        }
+//        peripherals.forEach { p in
+//            logger.log(level: .verbose, message: "[Peripheral] found \(p.peripheral.identifier) ...")
+//        }
 
         if let peripherlByUID = peripherals.first(where: { p in
             return p.hasNamePrefix(value: SpaceBeaverManager.devicePrefix)
@@ -193,6 +194,8 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
 
 extension SpaceBeaverManager: SpaceBeaverWritable {
     func writeToDevice(data: Data) {
+        logger.log(level: .verbose, message: "[Peripheral] <- \"0x\(data.hexString)\" sent")
+
         btManager.send(data: data)
     }
 }

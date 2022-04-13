@@ -46,6 +46,8 @@ struct LogMessage: Identifiable {
 }
 
 class EventsLogger {
+    static let shared = EventsLogger()
+
     var logs: [LogMessage] = []
 
     var filter: [LogType] = LogType.allCases
@@ -53,6 +55,10 @@ class EventsLogger {
     var filteredData: [LogMessage] {
         guard filter.count != LogType.allCases.count else { return logs }
         return logs.filter { filter.contains($0.level) }
+    }
+
+    init() {
+        print("[INIT]")
     }
 }
 
@@ -68,6 +74,7 @@ extension EventsLogger {
 
 extension EventsLogger: LogPresenter, Logger {
     func log(level aLevel: LogType, message aMessage: String) {
+        print("[\(aLevel.name)] \(aMessage)")
         DispatchQueue.main.async {
             let log = LogMessage(level: aLevel, message: aMessage, time: Date())
             self.addMessage(log)

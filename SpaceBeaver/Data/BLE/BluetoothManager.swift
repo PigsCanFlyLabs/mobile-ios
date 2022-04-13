@@ -299,9 +299,14 @@ class BluetoothManager: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate
             //TODO: Disconnect?
             return
         }
+
+//        for aService: CBService in peripheral.services! {
+//            bluetoothPeripheral!.discoverCharacteristics(nil, for: aService)
+//        }
+
         
         log(withLevel: .info, andMessage: "Services discovered")
-        
+
         for aService: CBService in peripheral.services! {
             if aService.uuid.isEqual(UARTServiceUUID) {
                 log(withLevel: .verbose, andMessage: "Nordic UART Service found")
@@ -397,13 +402,6 @@ class BluetoothManager: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate
         
         log(withLevel: .info, andMessage: "Notification received from: \(characteristic.uuid.uuidString), with value: 0x\(bytesReceived.hexString)")
         delegate?.received(data: bytesReceived)
-
-//        if let validUTF8String = String(data: bytesReceived, encoding: .utf8) {
-//            log(withLevel: .application, andMessage: "\"\(validUTF8String)\" received")
-//            delegate?.received(string: validUTF8String)
-//        } else {
-//            log(withLevel: .application, andMessage: "\"0x\(bytesReceived.hexString)\" received")
-//        }
     }
 }
 
