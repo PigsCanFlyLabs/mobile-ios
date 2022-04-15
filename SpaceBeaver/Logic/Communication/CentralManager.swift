@@ -11,7 +11,6 @@ import CoreBluetooth.CBPeripheral
 class SpaceBeaverManager: ObservableObject {
     static let shared = SpaceBeaverManager()
 
-    static let deviceIdentifier = UUID(uuidString: "BB539D7A-E05B-6F10-AE77-B3E6A808DB6F")
     static let devicePrefix = "SpaceBeaver"
 //    static let devicePrefix = "AM"
 
@@ -34,8 +33,6 @@ class SpaceBeaverManager: ObservableObject {
 
     let scanner: PeripheralScanner
     var peripheral: Peripheral? = nil
-
-    let MAIN_SERVICE1 = CBUUID(string: ServiceIdentifiers.uartServiceUUIDString)
 
     var currentPacketSize: Int = -1
     var currentPacketBuffer: Data? = nil
@@ -83,10 +80,6 @@ extension SpaceBeaverManager: PeripheralScannerDelegate {
     }
 
     func peripherals(_ peripherals: [Peripheral], addedTo old: [Peripheral]) {
-//        peripherals.forEach { p in
-//            logger.log(level: .verbose, message: "[Peripheral] found \(p.peripheral.identifier) ...")
-//        }
-
         if let peripherlByUID = peripherals.first(where: { p in
             return p.hasNamePrefix(value: SpaceBeaverManager.devicePrefix)
         }) {
@@ -175,7 +168,6 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
     func didConnectPeripheral(deviceName aName : String?) {
         logger.log(level: .verbose, message: "[Peripheral] did connect peripheral : \(aName ?? "Undefined")")
         isConnected = .connected
-        sendQueryProfile()
     }
 
     func didDisconnectPeripheral() {
@@ -185,6 +177,7 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
 
     func peripheralReady() {
         logger.log(level: .verbose, message: "[Peripheral] ready")
+        sendQueryProfile()
     }
 
     func peripheralNotSupported() {
@@ -195,7 +188,6 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
 extension SpaceBeaverManager: SpaceBeaverWritable {
     func writeToDevice(data: Data) {
         logger.log(level: .verbose, message: "[Peripheral] <- \"0x\(data.hexString)\" sent")
-
         btManager.send(data: data)
     }
 }

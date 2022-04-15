@@ -303,7 +303,6 @@ class BluetoothManager: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate
 //        for aService: CBService in peripheral.services! {
 //            bluetoothPeripheral!.discoverCharacteristics(nil, for: aService)
 //        }
-
         
         log(withLevel: .info, andMessage: "Services discovered")
 
@@ -346,6 +345,7 @@ class BluetoothManager: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate
                 log(withLevel: .verbose, andMessage: "Enabling notifications for \(uartTXCharacteristic!.uuid.uuidString)")
                 log(withLevel: .debug, andMessage: "peripheral.setNotifyValue(true, for: \(uartTXCharacteristic!.uuid.uuidString))")
                 bluetoothPeripheral!.setNotifyValue(true, for: uartTXCharacteristic!)
+                delegate?.peripheralReady()
             } else {
                 log(withLevel: .warning, andMessage: "UART service does not have required characteristics. Try to turn Bluetooth Off and On again to clear cache.")
                 delegate?.peripheralNotSupported()
