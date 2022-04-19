@@ -39,5 +39,15 @@ class CommunicationTests: XCTestCase {
         sut.received(data: sentData)
     }
 
+    func testReceivedData3() throws {
+        var received = Data()
+        received.append(contentsOf: [0x0D, 0x00, 0x00, 0x00])
+        received.append(contentsOf: [0x50, 0x48, 0x4F, 0x4E, 0x45, 0x49, 0x44, 0x3A, 0x20, 0x00, 0x34, 0x00, 0x35])
+
+        // PHONT~C¢
+        let sut = SpaceBeaverManager()
+        sut.received(data: received)
+    }
+
 }
 

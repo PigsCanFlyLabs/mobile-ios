@@ -125,7 +125,8 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
                 currentPacketBuffer?.append(contentsOf: data)
 
                 if currentPacketSize <= 0 {
-                    if let bytesReceived = currentPacketBuffer, let validUTF8String = String(data: bytesReceived, encoding: .utf8) {
+                    if let bytesReceived = currentPacketBuffer, var validUTF8String = String(data: bytesReceived, encoding: .utf8) {
+                        validUTF8String = validUTF8String.replacingOccurrences(of: "\0", with: "")
                         received(string: validUTF8String)
                     }
                     // Finished
