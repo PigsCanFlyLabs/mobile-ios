@@ -79,6 +79,7 @@ struct Dialog: Identifiable {
 
 struct Device {
     let deviceID: String
+    let name: String
 
-    static let dummy = Device(deviceID: "294810HD08HR")
+    static let dummy = Device(deviceID: "294810HD08HR", name: "SpaceBeaver")
 }

@@ -115,6 +115,7 @@ class DeviceCommunicator: SpaceBeaverReadable {
         case .phone(let id):
             logger.log(level: .verbose, message: "[MESSAGES] recognized phone")
             SpaceBeaverManager.shared.profileId = id
+
             performPending()
         case .undefined:
             break

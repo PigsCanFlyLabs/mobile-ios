@@ -50,6 +50,7 @@ class SpaceBeaverManager: ObservableObject {
         if self.peripheral != nil { return }
         self.peripheral = peripheral
         btManager.connectPeripheral(peripheral: peripheral.peripheral)
+        scanner.stopScanning()
     }
 
     func sendMessage(to: String, text: String) {
@@ -94,7 +95,9 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .poweredOn:
-            scanner.startScanning()
+            if peripheral == nil {
+                scanner.startScanning()
+            }
         default:
             ()
         }

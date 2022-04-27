@@ -53,7 +53,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading) {
                     Text("Device ID")
                         .font(Fonts.book.size14)
-                    Text(device.deviceID)
+                    Text(device.name + " [" + device.deviceID + "]")
                         .font(Fonts.book.size18)
                         .foregroundColor(Colors.colorAccent)
                 }

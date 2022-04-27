@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class SetupViewModel: ObservableObject {
 
@@ -28,31 +29,38 @@ class SetupViewModel: ObservableObject {
             guard let self = self else { return }
             switch state {
             case .scanning:
-                ()
+                EventsLogger.shared.log(level: .debug, message: "[FLOW] scanner.isConnected is connected = scanning")
             case .connected:
-                ()
+                EventsLogger.shared.log(level: .debug, message: "[FLOW] scanner.isConnected is connected = connected")
             case .unconnected:
                 self.flow = .noConnectionWithDevice
+                EventsLogger.shared.log(level: .debug, message: "[FLOW] scanner.isConnected is connected = unconnected")
+                EventsLogger.shared.log(level: .debug, message: "[FLOW] status = no connection with device")
             }
         }
         .store(in: &cancellables)
 
         scanner.$profileId.sink { [weak self] phoneId in
-            guard let phoneid = phoneId else { return }
-            self?.connected = Device(deviceID: phoneid)
+            EventsLogger.shared.log(level: .debug, message: "[FLOW] scanner.profileId \(phoneId)")
+            EventsLogger.shared.log(level: .debug, message: "[FLOW] scanner.peripheral.name \(self?.scanner.peripheral?.name)")
+            guard let phoneid = phoneId, let name = self?.scanner.peripheral?.name else { return }
+            self?.connected = Device(deviceID: phoneid, name: name)
             self?.flow = .finished
+            EventsLogger.shared.log(level: .debug, message: "[FLOW] status = finished")
         }
         .store(in: &cancellables)
 
         scanner.$registerDeviceId.sink { [weak self] deviceId in
+            EventsLogger.shared.log(level: .debug, message: "[FLOW] scanner.registerDeviceId \(deviceId)")
             guard let deviceId = deviceId else { return }
             self?.flow = .registerDevice
             self?.deviceId = deviceId
+            EventsLogger.shared.log(level: .debug, message: "[FLOW] status = registerDevice")
         }
         .store(in: &cancellables)
     }
 
-    let scanner = SpaceBeaverManager()
+    @ObservedObject var scanner = SpaceBeaverManager.shared
 
     @Published private(set) var flow: Flow = .waitingForDevice
     @Published private(set) var connected: Device?
