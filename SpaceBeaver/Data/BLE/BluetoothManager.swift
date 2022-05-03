@@ -58,6 +58,7 @@ protocol BluetoothManagerDelegate {
     func requestedConnect(peripheral: CBPeripheral)
     func didConnectPeripheral(deviceName aName : String?)
     func didDisconnectPeripheral()
+    func reconnectPeripheral(peripheral: Peripheral) -> Bool
     func peripheralReady()
     func peripheralNotSupported()
     func received(string: String)
@@ -265,6 +266,13 @@ class BluetoothManager: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate
         if case .some(let e) = error {
             log(withLevel: .debug, andMessage: "[Callback] Central Manager did disconnect peripheral")
             logError(error: e)
+            
+            let peripheral = Peripheral(peripheral: peripheral, rssi: peripheral.rssi ?? 0, name: peripheral.name ?? "N/A")
+            let reconnecting = delegate?.reconnectPeripheral(peripheral: peripheral) ?? false
+            if reconnecting {
+                log(withLevel: .debug, andMessage: "[Callback] Central Manager did reconnect")
+                return
+            }
         }
         log(withLevel: .debug, andMessage: "[Callback] Central Manager did disconnect peripheral successfully")
         log(withLevel: .info, andMessage: "Disconnected")

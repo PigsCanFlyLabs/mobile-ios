@@ -37,6 +37,7 @@ class SpaceBeaverManager: ObservableObject {
     var currentPacketSize: Int = -1
     var currentPacketBuffer: Data? = nil
     var handleReceivedString: ((String) -> Void)?
+    var retriesCount = 4
 
     init() {
         scanner = PeripheralScanner(services: [])
@@ -186,6 +187,17 @@ extension SpaceBeaverManager: BluetoothManagerDelegate {
 
     func peripheralNotSupported() {
         logger.log(level: .verbose, message: "[Peripheral] not supported")
+    }
+
+    func reconnectPeripheral(peripheral: Peripheral) -> Bool {
+        if retriesCount <= 0 {
+            return false
+        }
+        logger.log(level: .verbose, message: "[Peripheral] reconnecting attempt #\(5 - retriesCount)")
+        retriesCount -= 1
+        self.peripheral = nil
+        connect(peripheral: peripheral)
+        return true
     }
 }
 
