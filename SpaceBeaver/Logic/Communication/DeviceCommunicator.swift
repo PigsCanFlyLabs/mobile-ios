@@ -123,34 +123,46 @@ class DeviceCommunicator: SpaceBeaverReadable {
     }
 
     private func fetchRemoteProfile(deviceId: String, completion: @escaping (String?) -> Void ) {
-        guard let serviceUrl = URL(string: "http://api.spacebeaver.com/device_lookup")
+        guard let serviceUrl = URL(string: "https://api.spacebeaver.com/device_lookup?device_id=\(deviceId)")
         else { return }
 
-        logger.log(level: .verbose, message: "[MESSAGES] fetch from http://api.spacebeaver.com/device_lookup ")
 
-        let parameterDictionary = ["device_id" : deviceId]
+        logger.log(level: .verbose, message: "[MESSAGES] fetch from https://api.spacebeaver.com/device_lookup?device_id=\(deviceId)")
+
         var request = URLRequest(url: serviceUrl)
-        request.httpMethod = "POST"
+        request.httpMethod = "GET"
         request.setValue("Application/json", forHTTPHeaderField: "Content-Type")
-          guard let httpBody = try? JSONSerialization.data(withJSONObject: parameterDictionary, options: []) else {
-              return
-          }
-          request.httpBody = httpBody
 
-          let session = URLSession.shared
-          session.dataTask(with: request) { [weak self] (data, response, error) in
-              if let data = data {
-                  let profile = String(decoding: data, as: UTF8.self)
-                  self?.logger.log(level: .verbose, message: "[MESSAGES] fetched profile \(profile)")
-                  completion(profile)
-              } else {
-                  completion(nil)
-              }
-              if let error = error {
-                  self?.logger.log(level: .error, message: "[MESSAGES] fetched profile \(error.localizedDescription)")
-              }
 
-          }.resume()
+        let session = URLSession.shared
+        session.dataTask(with: request) { [weak self] (data, response, error) in
+            if let data = data {
+                if let response = try? JSONDecoder().decode(DeviceLookupResponse.self, from: data) {
+                    if response.status == "true", let profile = response.email {
+                        self?.logger.log(level: .verbose, message: "[MESSAGES] fetched profile \(profile)")
+                        completion(profile)
+                    } else {
+                        if let message = response.message {
+                            self?.logger.log(level: .verbose, message: "[MESSAGES] fetched profile :: \(message)")
+                        }
+                        completion(nil)
+                    }
+                }
+            } else {
+                completion(nil)
+            }
+            if let error = error {
+                self?.logger.log(level: .error, message: "[MESSAGES] fetched profile \(error.localizedDescription)")
+            }
+
+        }.resume()
     }
     
+}
+
+
+struct DeviceLookupResponse: Codable {
+    let status: String
+    let message: String?
+    let email: String?
 }

@@ -180,6 +180,7 @@ extension PeripheralScanner: CBCentralManagerDelegate {
         let name = advertisementData[CBAdvertisementDataLocalNameKey] as? String
             ?? peripheral.name
             ?? "N/A"
+        print("\(name) with \(peripheral.debugDescription)")
         let p = Peripheral(peripheral: peripheral, rssi: RSSI, name: name)
         tmpPeripherals.insert(p)
     }
